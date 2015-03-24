@@ -25,44 +25,34 @@ public static class TexturePackerImport{
     //process to sprites : adds pivot for animations
 
     [MenuItem("Assets/TexturePacker/Process to animated Sprites")]
-    static void ProcessToAnimation()
-    { ProcessToSprite(9); Debug.Log("Setting Pivots for Animations ... DONE!"); }
+    static void ProcessToAnimation() { Debug.Log("Setting Pivots for Animations ...");  ProcessToSprite(9); Debug.Log("DONE!"); }
 
     [MenuItem("Assets/TexturePacker/Process to Sprites/Pivot: Center")]
-    static void Center()
-    { ProcessToSprite(0); Debug.Log("Setting Pivots to: Center ... DONE!"); }
+    static void Center(){ Debug.Log("Setting Pivots to: Center ...");  ProcessToSprite(0); Debug.Log("DONE!"); }
 
     [MenuItem("Assets/TexturePacker/Process to Sprites/Pivot: TopLeft")]
-    static void TopLeft() 
-    { ProcessToSprite(1); Debug.Log("Setting Pivots to: TopLeft ... DONE!"); }
+    static void TopLeft() { Debug.Log("Setting Pivots to: TopLeft ...");  ProcessToSprite(1); Debug.Log("DONE!"); }
 
     [MenuItem("Assets/TexturePacker/Process to Sprites/Pivot: Top")]
-    static void Top() 
-    { ProcessToSprite(2); Debug.Log("Setting Pivots to: Top ... DONE!"); }
+    static void Top() { Debug.Log("Setting Pivots to: Top ...");  ProcessToSprite(2); Debug.Log("DONE!"); }
 
     [MenuItem("Assets/TexturePacker/Process to Sprites/Pivot: TopRight")]
-    static void TopRight()
-    { ProcessToSprite(3); Debug.Log("Setting Pivots to: TopRight ... DONE!"); }
+    static void TopRight(){ Debug.Log("Setting Pivots to: TopRight ...");  ProcessToSprite(3); Debug.Log("DONE!"); }
 
     [MenuItem("Assets/TexturePacker/Process to Sprites/Pivot: Left")]
-    static void Left()
-    { ProcessToSprite(4); Debug.Log("Setting Pivots to: Left ... DONE!"); }
+    static void Left(){ Debug.Log("Setting Pivots to: Left ...");  ProcessToSprite(4); Debug.Log("DONE!"); }
 
     [MenuItem("Assets/TexturePacker/Process to Sprites/Pivot: Right")]
-    static void Right()
-    { ProcessToSprite(5); Debug.Log("Setting Pivots to: Right ... DONE!"); }
+    static void Right(){ Debug.Log("Setting Pivots to: Right ...");  ProcessToSprite(5); Debug.Log("DONE!"); }
 
     [MenuItem("Assets/TexturePacker/Process to Sprites/Pivot: BottomLeft")]
-    static void BottomLeft()
-    { ProcessToSprite(6); Debug.Log("Setting Pivots to: BottomLeft ... DONE!"); }
+    static void BottomLeft() { Debug.Log("Setting Pivots to: BottomLeft ...");  ProcessToSprite(6); Debug.Log("DONE!"); }
 
     [MenuItem("Assets/TexturePacker/Process to Sprites/Pivot: Bottom")]
-    static void Bottom()
-    { ProcessToSprite(7); Debug.Log("Setting Pivots to: Bottom ... DONE!"); }
+    static void Bottom() { Debug.Log("Setting Pivots to: Bottom ...");  ProcessToSprite(7); Debug.Log("DONE!"); }    
 
     [MenuItem("Assets/TexturePacker/Process to Sprites/Pivot: BottomRight")]
-    static void BottomRight()
-    { ProcessToSprite(8); Debug.Log("Setting Pivots to: BottomRight ... DONE!"); }
+    static void BottomRight() { Debug.Log("Setting Pivots to: BottomRight ...");  ProcessToSprite(8); Debug.Log("DONE!"); }
 
     //[MenuItem("Assets/TexturePacker/Process to Sprites")]
 	static void ProcessToSprite(int pivot){
@@ -73,7 +63,14 @@ public static class TexturePackerImport{
 		
 		List<SpriteMetaData> sprites = TexturePacker.ProcessToSprites(txt.text, pivot);
 
-		string path = rootPath + "/" + meta.image;
+        string imageName = meta.image;
+        //validate image name, if it's null or something, then try to load the sprite with the same name as text file with png extension
+        if ((imageName == null) || (imageName.Length <= 0)) {
+            imageName = Selection.activeObject.name;
+            imageName += ".png";
+        }
+		string path = rootPath + "/" + imageName;
+        Debug.Log("Loading spritesheet at: " + path);
 		TextureImporter texImp = AssetImporter.GetAtPath(path) as TextureImporter;
 		texImp.spritesheet = sprites.ToArray();
 		texImp.textureType = TextureImporterType.Sprite;
@@ -198,7 +195,7 @@ public static class TexturePackerImport{
 			if(createdNewPrefab){
 				GameObject go = new GameObject(meshes[i].name, typeof(MeshRenderer), typeof(MeshFilter));
 				go.GetComponent<MeshFilter>().sharedMesh = meshes[i];
-				go.renderer.sharedMaterial = mat;
+				go.GetComponent<Renderer>().sharedMaterial = mat;
 				
 				PrefabUtility.ReplacePrefab(go, prefab, ReplacePrefabOptions.ConnectToPrefab);
 				
@@ -206,7 +203,7 @@ public static class TexturePackerImport{
 			}
 			else{
 				GameObject pgo = (GameObject)prefab;
-				pgo.renderer.sharedMaterial = mat;
+				pgo.GetComponent<Renderer>().sharedMaterial = mat;
 				pgo.GetComponent<MeshFilter>().sharedMesh = meshes[i];
 				EditorUtility.SetDirty(pgo);
 			}

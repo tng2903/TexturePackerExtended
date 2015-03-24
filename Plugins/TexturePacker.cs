@@ -41,7 +41,8 @@ public static class TexturePackerExtensions{
 		if(table.ContainsKey("meta")){
 			Hashtable metaTable = (Hashtable)table["meta"];
 			if(metaTable.ContainsKey("app")){
-				return true;
+                if (((string)metaTable["app"]).Contains("texturepacker"))
+				    return true;
 //				if((string)metaTable["app"] == "http://www.texturepacker.com"){
 //					return true;	
 //				}
@@ -212,7 +213,8 @@ public class TexturePacker{
 
             smd.pivot = anim_pivot;
 
-            Debug.Log("Processed: " + smd.name);
+            //Debug.Log("Processed: " + smd.name);
+            Debug.Log(string.Format("Processed sprite {0}, rect(w,h)=|{1},{2}|", smd.name, smd.rect.width, smd.rect.height));
 
             // //
 
@@ -226,12 +228,20 @@ public class TexturePacker{
 		public Vector2 size;
 		public float scale;
 		public string smartUpdate;
+        
 		
-		public MetaData(Hashtable table){
+		public MetaData(Hashtable table){            
 			image = (string)table["image"];
 			format = (string)table["format"];
 			size = ((Hashtable)table["size"]).TPHashtableToVector2();
-			scale = float.Parse(table["scale"].ToString());
+            if (table["scale"] != null) {
+                //auto set scale to 1 if meta don't have it
+                if (!(float.TryParse(table["scale"].ToString(), out scale))) {
+                    scale = 1;
+                }
+            } else {
+                scale = 1;
+            }
 			smartUpdate = (string)table["smartUpdate"];
 		}
 	}
